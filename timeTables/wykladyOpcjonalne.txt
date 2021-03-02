@@ -1,0 +1,20 @@
+Poniedziałek:
+    18:15 - 19:45
+        Grafika
+        Wykład
+Wtorek:
+    12:30 - 14:00
+        Inżynieria oprogramowania
+        Wykład
+Środa:
+    14:15 - 15:45
+        Technika cyfrowa
+        Wykład
+Czwartek:
+    8:15 - 9:45
+        Bezpieczeństwo informacji
+        Wykład
+Piątek:
+    8:15 - 9:45
+        Aplikacje internetowe
+        Wykład

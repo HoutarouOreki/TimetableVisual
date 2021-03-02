@@ -11,7 +11,9 @@
 
         <div id="main-container" class="d-flex">
             <div id="days-container">
-                <div class="hours-height-container"></div>
+                <div class="hours-height-container d-flex justify-content-center align-items-center">
+                    <a id="group-selector-open-button" class="btn text-white">Wybierz grupy</a>
+                </div>
                 <div id="day-name-containers"></div>
             </div>
             <div id="hours-container">
@@ -20,6 +22,13 @@
                 </div>
                 <div id="day-content-containers"></div>
             </div>
+        </div>
+
+        <div id="group-selector" class="d-none">
+            <fieldset id="timetables-fieldset">
+                <legend>Grupy:</legend>
+            </fieldset>
+            <button type="button" id="group-selector-close-button" class="btn btn-dark btn-lg">Zamknij</button>
         </div>
 
         <script src="script.js"></script>

@@ -1,11 +1,15 @@
 p {
     margin: 0;
     line-height: 1.05rem;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 
 div {
     color: white;
+}
+
+.black-border-bottom {
+    border-bottom: 1px solid #111;
 }
 
 .day-time-separator {
@@ -52,15 +56,27 @@ div {
 
 .day-event {
     position: absolute;
-    height: 100%;
     background-color: #777;
+}
+
+.day-event-background {
+    opacity: 50%;
+    width: 100%;
+    height: 100%;
+    position:absolute;
+}
+
+.day-event-content-container {
+    position: absolute;
     overflow-y: auto;
     overscroll-behavior-y: none;
+    height: 100%;
+    width: 100%;
 }
 
 .day-event-content {
-    padding: 5px;
-    padding-top: 9px;
+    /* padding: 5px;
+    padding-top: 9px; */
     min-height: 100%;
     display: flex;
     flex-direction: column;
@@ -72,15 +88,18 @@ div {
     font-weight: bold;
     font-size: small;
     flex-shrink: 0;
+    z-index: 1;
 }
 
 .day-event-description {
     font-size: smaller;
     flex-shrink: 0;
+    z-index: 1;
 }
 
 .day-event-hours {
     font-size: smaller;
+    z-index: 1;
 }
 
 #main-container {
@@ -126,4 +145,26 @@ div {
 #hour-names-container {
     position: relative;
     height: 100%;
+}
+
+#group-selector {
+    position:fixed;
+    width: 100%;
+    height: 100%;
+    background-color: #333E;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    flex-direction: column;
+}
+
+#group-selector-close-button {
+    margin: 10px;
+}
+
+#group-selector-open-button {
+    font-weight: bold;
 }

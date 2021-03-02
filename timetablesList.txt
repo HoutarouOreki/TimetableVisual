@@ -1,0 +1,4 @@
+IIST 4.3/6 / IIST436 / red
+IIST 4.3/5 / IIST435 / violet
+Wykłady na obecność / wykladyWymagane / yellow
+Pozostałe wykłady / wykladyOpcjonalne / green

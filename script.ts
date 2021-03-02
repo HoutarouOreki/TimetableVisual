@@ -4,7 +4,13 @@ class DayEvent {
     endHour: number;
     title: string | null;
     description: string | null;
+    div: HTMLDivElement;
+    collidingEvents: DayEvent[] = [];
 }
+
+var groupColors = {};
+
+var placedEvents: DayEvent[] = [];
 
 var daysContainerWidth = 300
 var minHour = 8;
@@ -31,7 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
     generateHours();
     generateDayContentContainers();
 
-    readTextFile("timeTables/Jarek.txt", parseTimeTableText);
+    generateCheckboxes();
+    wireUpSelectorButtons();
 });
 
 /////////
@@ -83,6 +90,78 @@ function generateDaySeparators(container: HTMLDivElement) {
     }
 }
 
+function generateCheckboxes() {
+    readTextFile("timetablesList.txt", (t: string) => {
+        let fieldset = document.getElementById("timetables-fieldset");
+        t.split("\n").forEach((line: string) => {
+            let [name, path, color] = line.split(" / ");
+
+            let div = document.createElement("div");
+            div.className = "form-check form-switch";
+
+            let checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "form-check-input";
+            let checkboxId = "timetable-checkbox-" + path;
+            checkbox.id = checkboxId;
+
+            checkbox.addEventListener("change", onCheckboxChange)
+
+            div.appendChild(checkbox);
+
+            let label = document.createElement("label");
+            label.textContent = name;
+            label.htmlFor = checkboxId;
+            div.appendChild(label);
+
+            fieldset.appendChild(div);
+
+            groupColors[path] = color;
+        });
+    });
+}
+
+function wireUpSelectorButtons() {
+    let groupSelector = document.getElementById("group-selector");
+    let closeButton = document.getElementById("group-selector-close-button");
+    closeButton.addEventListener("click", () => {
+        groupSelector.classList.add("d-none");
+    });
+    let openButton = document.getElementById("group-selector-open-button");
+    openButton.addEventListener("click", () => {
+        groupSelector.classList.remove("d-none");
+        console.log('H');
+
+    });
+}
+
+////////
+
+function onCheckboxChange() {
+    clearTimetables();
+
+    let inputElements = document.getElementsByTagName("input");
+    let selectedTimetables: string[] = [];
+    for (var i = 0; i < inputElements.length; i++) {
+        if (inputElements[i].type == "checkbox" && inputElements[i].checked) {
+            selectedTimetables.push(inputElements[i].id.replace("timetable-checkbox-", ""));
+        }
+    }
+    selectedTimetables.forEach(timetableName => {
+        readTextFile("timeTables/" + timetableName + ".txt", (t: string) =>
+            parseGenerateTimetable(t, timetableName));
+    });
+}
+
+function clearTimetables() {
+    placedEvents.forEach(placedEvent => {
+        placedEvent.div.remove();
+    });
+    placedEvents.length = 0;
+}
+
+////////
+
 function calculateTimePositionPercentage(hours: number) {
     return (hours - minHour) / (maxHour - minHour) * 100;
 }
@@ -98,17 +177,26 @@ function calculateEventTimePercentages(dayEvent: DayEvent) {
     return calculateTimePercentages(dayEvent.startHour, dayEvent.endHour);
 }
 
-function placeDayEvent(dayEvent: DayEvent) {
+function placeDayEvent(dayEvent: DayEvent, groupPath: string) {
     const timePercentages = calculateEventTimePercentages(dayEvent);
 
     let dayEventDiv = document.createElement("div");
     dayEventDiv.className = "day-event";
-    dayEventDiv.style.marginLeft = timePercentages.start + "%";
+    dayEventDiv.style.left = timePercentages.start + "%";
     dayEventDiv.style.width = timePercentages.duration + "%";
+
+    let dayEventContentContainer = document.createElement("div");
+    dayEventContentContainer.className = "day-event-content-container";
+    dayEventDiv.appendChild(dayEventContentContainer);
+
+    let dayEventBackground = document.createElement("div");
+    dayEventBackground.className = "day-event-background";
+    dayEventBackground.style.backgroundColor = groupColors[groupPath] ?? "gray";
+    dayEventDiv.appendChild(dayEventBackground);
 
     let dayEventContent = document.createElement("div");
     dayEventContent.className = "day-event-content";
-    dayEventDiv.appendChild(dayEventContent);
+    dayEventContentContainer.appendChild(dayEventContent);
 
     if (dayEvent.title != null) {
         let title = document.createElement("p");
@@ -129,6 +217,43 @@ function placeDayEvent(dayEvent: DayEvent) {
     dayEventContent.appendChild(hours);
 
     dayContentContainersDictionary[dayEvent.weekDay].appendChild(dayEventDiv);
+    dayEvent.div = dayEventDiv;
+
+    findAdjustWithCollidingEvents(dayEvent);
+
+    placedEvents.push(dayEvent);
+}
+
+function findAdjustWithCollidingEvents(event: DayEvent) {
+    let collidingEvents: DayEvent[] = [];
+    placedEvents.forEach(placedEvent => {
+        if (placedEvent.weekDay == event.weekDay) {
+            if ((event.startHour <= placedEvent.startHour && event.endHour >= placedEvent.endHour) ||
+                (event.startHour > placedEvent.startHour && event.startHour < placedEvent.endHour) ||
+                (event.endHour > placedEvent.startHour && event.endHour < placedEvent.endHour)) {
+                collidingEvents.push(placedEvent);
+                placedEvent.collidingEvents.forEach(e => {
+                    if (!collidingEvents.includes(e)) {
+                        collidingEvents.push(e);
+                    }
+                    if (!e.collidingEvents.includes(event)) {
+                        e.collidingEvents.push(event);
+                    }
+                })
+            }
+        }
+    });
+
+    collidingEvents.push(event);
+    for (var i = 0; i < collidingEvents.length; i++) {
+        const collidingEvent = collidingEvents[i];
+        const heightPercent = 1 / collidingEvents.length * 100;
+        collidingEvent.div.style.height = heightPercent + "%";
+        collidingEvent.div.style.top = i * heightPercent + "%";
+        if (collidingEvents.length > 1 && !collidingEvent.div.classList.contains("black-border-bottom")) {
+            collidingEvent.div.classList.add("black-border-bottom");
+        }
+    }
 }
 
 function hourMinuteToHours(hour: number, minute: number) {
@@ -163,7 +288,7 @@ function readTextFile(sciezka: string, callback: Function) {
         });
 }
 
-function parseTimeTableText(t: string) {
+function parseGenerateTimetable(t: string, groupPath: string) {
     const lines = t.split("\n");
 
     const dayNameRegex = /^(.+):$/
@@ -175,6 +300,9 @@ function parseTimeTableText(t: string) {
 
     for (var i = 0; i < lines.length; i++) {
         const line = lines[i];
+        if (/^\s*$/.test(line)) {
+            continue;
+        }
         let dayNameMatch = execRegex(dayNameRegex, line);
         if (dayNameMatch != null) {
             currentDay = dayNameMatch[1];
@@ -183,7 +311,7 @@ function parseTimeTableText(t: string) {
         let eventMatch = execRegex(dayEventRegex, line);
         if (eventMatch != null) {
             if (currentEvent != undefined) {
-                placeDayEvent(currentEvent);
+                placeDayEvent(currentEvent, groupPath);
             }
             currentEvent = new DayEvent();
             currentEvent.weekDay = currentDay;
@@ -204,7 +332,7 @@ function parseTimeTableText(t: string) {
     };
 
     if (currentEvent != undefined) {
-        placeDayEvent(currentEvent);
+        placeDayEvent(currentEvent, groupPath);
     }
 }
 

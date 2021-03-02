@@ -1,8 +1,11 @@
 var DayEvent = /** @class */ (function () {
     function DayEvent() {
+        this.collidingEvents = [];
     }
     return DayEvent;
 }());
+var groupColors = {};
+var placedEvents = [];
 var daysContainerWidth = 300;
 var minHour = 8;
 var maxHour = 20;
@@ -21,7 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
     generateDays();
     generateHours();
     generateDayContentContainers();
-    readTextFile("timeTables/Jarek.txt", parseTimeTableText);
+    generateCheckboxes();
+    wireUpSelectorButtons();
 });
 /////////
 function generateDays() {
@@ -63,6 +67,64 @@ function generateDaySeparators(container) {
         container.appendChild(separator);
     }
 }
+function generateCheckboxes() {
+    readTextFile("timetablesList.txt", function (t) {
+        var fieldset = document.getElementById("timetables-fieldset");
+        t.split("\n").forEach(function (line) {
+            var _a = line.split(" / "), name = _a[0], path = _a[1], color = _a[2];
+            var div = document.createElement("div");
+            div.className = "form-check form-switch";
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "form-check-input";
+            var checkboxId = "timetable-checkbox-" + path;
+            checkbox.id = checkboxId;
+            checkbox.addEventListener("change", onCheckboxChange);
+            div.appendChild(checkbox);
+            var label = document.createElement("label");
+            label.textContent = name;
+            label.htmlFor = checkboxId;
+            div.appendChild(label);
+            fieldset.appendChild(div);
+            groupColors[path] = color;
+        });
+    });
+}
+function wireUpSelectorButtons() {
+    var groupSelector = document.getElementById("group-selector");
+    var closeButton = document.getElementById("group-selector-close-button");
+    closeButton.addEventListener("click", function () {
+        groupSelector.classList.add("d-none");
+    });
+    var openButton = document.getElementById("group-selector-open-button");
+    openButton.addEventListener("click", function () {
+        groupSelector.classList.remove("d-none");
+        console.log('H');
+    });
+}
+////////
+function onCheckboxChange() {
+    clearTimetables();
+    var inputElements = document.getElementsByTagName("input");
+    var selectedTimetables = [];
+    for (var i = 0; i < inputElements.length; i++) {
+        if (inputElements[i].type == "checkbox" && inputElements[i].checked) {
+            selectedTimetables.push(inputElements[i].id.replace("timetable-checkbox-", ""));
+        }
+    }
+    selectedTimetables.forEach(function (timetableName) {
+        readTextFile("timeTables/" + timetableName + ".txt", function (t) {
+            return parseGenerateTimetable(t, timetableName);
+        });
+    });
+}
+function clearTimetables() {
+    placedEvents.forEach(function (placedEvent) {
+        placedEvent.div.remove();
+    });
+    placedEvents.length = 0;
+}
+////////
 function calculateTimePositionPercentage(hours) {
     return (hours - minHour) / (maxHour - minHour) * 100;
 }
@@ -75,15 +137,23 @@ function calculateTimePercentages(startHours, endHours) {
 function calculateEventTimePercentages(dayEvent) {
     return calculateTimePercentages(dayEvent.startHour, dayEvent.endHour);
 }
-function placeDayEvent(dayEvent) {
+function placeDayEvent(dayEvent, groupPath) {
+    var _a;
     var timePercentages = calculateEventTimePercentages(dayEvent);
     var dayEventDiv = document.createElement("div");
     dayEventDiv.className = "day-event";
-    dayEventDiv.style.marginLeft = timePercentages.start + "%";
+    dayEventDiv.style.left = timePercentages.start + "%";
     dayEventDiv.style.width = timePercentages.duration + "%";
+    var dayEventContentContainer = document.createElement("div");
+    dayEventContentContainer.className = "day-event-content-container";
+    dayEventDiv.appendChild(dayEventContentContainer);
+    var dayEventBackground = document.createElement("div");
+    dayEventBackground.className = "day-event-background";
+    dayEventBackground.style.backgroundColor = (_a = groupColors[groupPath]) !== null && _a !== void 0 ? _a : "gray";
+    dayEventDiv.appendChild(dayEventBackground);
     var dayEventContent = document.createElement("div");
     dayEventContent.className = "day-event-content";
-    dayEventDiv.appendChild(dayEventContent);
+    dayEventContentContainer.appendChild(dayEventContent);
     if (dayEvent.title != null) {
         var title = document.createElement("p");
         title.className = "day-event-title";
@@ -101,6 +171,39 @@ function placeDayEvent(dayEvent) {
     hours.textContent = hoursToString(dayEvent.startHour) + " - " + hoursToString(dayEvent.endHour);
     dayEventContent.appendChild(hours);
     dayContentContainersDictionary[dayEvent.weekDay].appendChild(dayEventDiv);
+    dayEvent.div = dayEventDiv;
+    findAdjustWithCollidingEvents(dayEvent);
+    placedEvents.push(dayEvent);
+}
+function findAdjustWithCollidingEvents(event) {
+    var collidingEvents = [];
+    placedEvents.forEach(function (placedEvent) {
+        if (placedEvent.weekDay == event.weekDay) {
+            if ((event.startHour <= placedEvent.startHour && event.endHour >= placedEvent.endHour) ||
+                (event.startHour > placedEvent.startHour && event.startHour < placedEvent.endHour) ||
+                (event.endHour > placedEvent.startHour && event.endHour < placedEvent.endHour)) {
+                collidingEvents.push(placedEvent);
+                placedEvent.collidingEvents.forEach(function (e) {
+                    if (!collidingEvents.includes(e)) {
+                        collidingEvents.push(e);
+                    }
+                    if (!e.collidingEvents.includes(event)) {
+                        e.collidingEvents.push(event);
+                    }
+                });
+            }
+        }
+    });
+    collidingEvents.push(event);
+    for (var i = 0; i < collidingEvents.length; i++) {
+        var collidingEvent = collidingEvents[i];
+        var heightPercent = 1 / collidingEvents.length * 100;
+        collidingEvent.div.style.height = heightPercent + "%";
+        collidingEvent.div.style.top = i * heightPercent + "%";
+        if (collidingEvents.length > 1 && !collidingEvent.div.classList.contains("black-border-bottom")) {
+            collidingEvent.div.classList.add("black-border-bottom");
+        }
+    }
 }
 function hourMinuteToHours(hour, minute) {
     return hour + (minute / 60);
@@ -126,7 +229,7 @@ function readTextFile(sciezka, callback) {
         callback(data.replace(/[\r]+/g, ""));
     });
 }
-function parseTimeTableText(t) {
+function parseGenerateTimetable(t, groupPath) {
     var lines = t.split("\n");
     var dayNameRegex = /^(.+):$/;
     var dayEventRegex = /^(?:\t|\s{4})(\d+):(\d+) ?- ?(\d+):(\d+):?$/;
@@ -135,6 +238,9 @@ function parseTimeTableText(t) {
     var currentEvent;
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
+        if (/^\s*$/.test(line)) {
+            continue;
+        }
         var dayNameMatch = execRegex(dayNameRegex, line);
         if (dayNameMatch != null) {
             currentDay = dayNameMatch[1];
@@ -143,7 +249,7 @@ function parseTimeTableText(t) {
         var eventMatch = execRegex(dayEventRegex, line);
         if (eventMatch != null) {
             if (currentEvent != undefined) {
-                placeDayEvent(currentEvent);
+                placeDayEvent(currentEvent, groupPath);
             }
             currentEvent = new DayEvent();
             currentEvent.weekDay = currentDay;
@@ -166,7 +272,7 @@ function parseTimeTableText(t) {
     }
     ;
     if (currentEvent != undefined) {
-        placeDayEvent(currentEvent);
+        placeDayEvent(currentEvent, groupPath);
     }
 }
 function execRegex(regex, text) {
