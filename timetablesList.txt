@@ -1,4 +1,4 @@
-IIST 4.3/5 / IIST435 / purple
-IIST 4.3/6 / IIST436 / red
+IIST 4.3/5 - lab, ćw / IIST435 / purple
+IIST 4.3/6 - lab, ćw / IIST436 / red
 Wykłady z obecnością / wykladyWymagane / orange
 Wykłady opcjonalne / wykladyOpcjonalne / blue
