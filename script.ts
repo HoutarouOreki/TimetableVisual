@@ -34,12 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
     readTextFile("timeTables/Jarek.txt", parseTimeTableText);
 });
 
-////
+/////////
 
 function generateDays() {
     let dayNameContainers = document.getElementById("day-name-containers");
     days.forEach(day => {
-        let dayNameContainer = document.createElement("p");
+        let dayNameContainer = document.createElement("div");
         dayNameContainer.className = "day-name-container";
         dayNameContainer.textContent = day;
         dayNameContainers.appendChild(dayNameContainer);
@@ -51,9 +51,10 @@ function generateHours() {
     for (let hour = minHour; hour < maxHour; hour += hourDisplayStep) {
         let time = hoursToHourMinute(hour);
 
-        let hourNameContainer = document.createElement("p");
+        let hourNameContainer = document.createElement("div");
         hourNameContainer.textContent = time.hour + ":" + (time.minute < 10 ? "0" : "") + time.minute;
         hourNameContainer.className = "hour-name-container";
+        hourNameContainer.style.left = calculateTimePositionPercentage(hour) + "%";
         hourNamesContainer.appendChild(hourNameContainer);
     }
 }
@@ -65,19 +66,45 @@ function generateDayContentContainers() {
         dayContainer.className = "day-content-container";
         dayContentContainers.appendChild(dayContainer);
         dayContentContainersDictionary[day] = dayContainer;
+
+        generateDaySeparators(dayContainer);
     });
 }
 
+function generateDaySeparators(container: HTMLDivElement) {
+    for (var i = minHour + hourDisplayStep; i < maxHour; i += hourDisplayStep) {
+        const timePercentage = calculateTimePositionPercentage(i);
+
+        let separator = document.createElement("div");
+        separator.className = "day-time-separator";
+        separator.style.left = timePercentage + "%";
+
+        container.appendChild(separator);
+    }
+}
+
+function calculateTimePositionPercentage(hours: number) {
+    return (hours - minHour) / (maxHour - minHour) * 100;
+}
+
+function calculateTimePercentages(startHours: number, endHours: number) {
+    let end = calculateTimePositionPercentage(endHours);
+    let start = calculateTimePositionPercentage(startHours);
+    let duration = end - start;
+    return { start, end, duration };
+}
+
+function calculateEventTimePercentages(dayEvent: DayEvent) {
+    return calculateTimePercentages(dayEvent.startHour, dayEvent.endHour);
+}
+
 function placeDayEvent(dayEvent: DayEvent) {
-    const totalDayHours = maxHour - minHour;
-    const startHourPercent = (dayEvent.startHour - minHour) / totalDayHours;
-    const endHourPercent = (dayEvent.endHour - minHour) / totalDayHours;
-    const totalEventHoursPercent = endHourPercent - startHourPercent;
+    const timePercentages = calculateEventTimePercentages(dayEvent);
 
     let dayEventDiv = document.createElement("div");
     dayEventDiv.className = "day-event";
-    dayEventDiv.style.marginLeft = startHourPercent * 100 + "%";
-    dayEventDiv.style.width = totalEventHoursPercent * 100 + "%";
+    dayEventDiv.style.marginLeft = timePercentages.start + "%";
+    dayEventDiv.style.width = timePercentages.duration + "%";
 
     let dayEventContent = document.createElement("div");
     dayEventContent.className = "day-event-content";
@@ -126,7 +153,7 @@ function hoursToString(hours: number) {
     return hourMinuteToString(hour, minute);
 }
 
-//
+///////////
 
 function readTextFile(sciezka: string, callback: Function) {
     fetch(sciezka)
@@ -139,7 +166,7 @@ function readTextFile(sciezka: string, callback: Function) {
 function parseTimeTableText(t: string) {
     const lines = t.split("\n");
 
-    const dayNameRegex = /^([A-Z].+):$/
+    const dayNameRegex = /^(.+):$/
     const dayEventRegex = /^(?:\t|\s{4})(\d+):(\d+) ?- ?(\d+):(\d+):?$/
     const dayEventDescription = /^(?:\t|\s{4}){2}(.*)$/
 

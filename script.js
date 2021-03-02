@@ -23,11 +23,11 @@ document.addEventListener("DOMContentLoaded", function () {
     generateDayContentContainers();
     readTextFile("timeTables/Jarek.txt", parseTimeTableText);
 });
-////
+/////////
 function generateDays() {
     var dayNameContainers = document.getElementById("day-name-containers");
     days.forEach(function (day) {
-        var dayNameContainer = document.createElement("p");
+        var dayNameContainer = document.createElement("div");
         dayNameContainer.className = "day-name-container";
         dayNameContainer.textContent = day;
         dayNameContainers.appendChild(dayNameContainer);
@@ -37,9 +37,10 @@ function generateHours() {
     var hourNamesContainer = document.getElementById("hour-names-container");
     for (var hour = minHour; hour < maxHour; hour += hourDisplayStep) {
         var time = hoursToHourMinute(hour);
-        var hourNameContainer = document.createElement("p");
+        var hourNameContainer = document.createElement("div");
         hourNameContainer.textContent = time.hour + ":" + (time.minute < 10 ? "0" : "") + time.minute;
         hourNameContainer.className = "hour-name-container";
+        hourNameContainer.style.left = calculateTimePositionPercentage(hour) + "%";
         hourNamesContainer.appendChild(hourNameContainer);
     }
 }
@@ -50,17 +51,36 @@ function generateDayContentContainers() {
         dayContainer.className = "day-content-container";
         dayContentContainers.appendChild(dayContainer);
         dayContentContainersDictionary[day] = dayContainer;
+        generateDaySeparators(dayContainer);
     });
 }
+function generateDaySeparators(container) {
+    for (var i = minHour + hourDisplayStep; i < maxHour; i += hourDisplayStep) {
+        var timePercentage = calculateTimePositionPercentage(i);
+        var separator = document.createElement("div");
+        separator.className = "day-time-separator";
+        separator.style.left = timePercentage + "%";
+        container.appendChild(separator);
+    }
+}
+function calculateTimePositionPercentage(hours) {
+    return (hours - minHour) / (maxHour - minHour) * 100;
+}
+function calculateTimePercentages(startHours, endHours) {
+    var end = calculateTimePositionPercentage(endHours);
+    var start = calculateTimePositionPercentage(startHours);
+    var duration = end - start;
+    return { start: start, end: end, duration: duration };
+}
+function calculateEventTimePercentages(dayEvent) {
+    return calculateTimePercentages(dayEvent.startHour, dayEvent.endHour);
+}
 function placeDayEvent(dayEvent) {
-    var totalDayHours = maxHour - minHour;
-    var startHourPercent = (dayEvent.startHour - minHour) / totalDayHours;
-    var endHourPercent = (dayEvent.endHour - minHour) / totalDayHours;
-    var totalEventHoursPercent = endHourPercent - startHourPercent;
+    var timePercentages = calculateEventTimePercentages(dayEvent);
     var dayEventDiv = document.createElement("div");
     dayEventDiv.className = "day-event";
-    dayEventDiv.style.marginLeft = startHourPercent * 100 + "%";
-    dayEventDiv.style.width = totalEventHoursPercent * 100 + "%";
+    dayEventDiv.style.marginLeft = timePercentages.start + "%";
+    dayEventDiv.style.width = timePercentages.duration + "%";
     var dayEventContent = document.createElement("div");
     dayEventContent.className = "day-event-content";
     dayEventDiv.appendChild(dayEventContent);
@@ -98,7 +118,7 @@ function hoursToString(hours) {
     var _a = hoursToHourMinute(hours), hour = _a.hour, minute = _a.minute;
     return hourMinuteToString(hour, minute);
 }
-//
+///////////
 function readTextFile(sciezka, callback) {
     fetch(sciezka)
         .then(function (response) { return response.text(); })
@@ -108,7 +128,7 @@ function readTextFile(sciezka, callback) {
 }
 function parseTimeTableText(t) {
     var lines = t.split("\n");
-    var dayNameRegex = /^([A-Z].+):$/;
+    var dayNameRegex = /^(.+):$/;
     var dayEventRegex = /^(?:\t|\s{4})(\d+):(\d+) ?- ?(\d+):(\d+):?$/;
     var dayEventDescription = /^(?:\t|\s{4}){2}(.*)$/;
     var currentDay;

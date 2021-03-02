@@ -1,48 +1,37 @@
 Poniedziałek:
     8:00 - 10:15
         Technika mikroprocesorowa
-        aiudisad
-        asdiusahd
-        asdihdbsa
-        asdihdbsaasd
-        asdihdbsaas
-        aiudisad
-        asdiusahd
-        asdihdbsa
-        asdihdbsaasd
-        asdihdbsaas
-        aiudisad
-        asdiusahd
-        asdihdbsa
-        asdihdbsaasd
-        asdihdbsaas
-        aiudisad
-        asdiusahd
-        asdihdbsa
-        asdihdbsaasd
-        asdihdbsaas
-        aiudisad
-        asdiusahd
-        asdihdbsa
-        asdihdbsaasd
-        asdihdbsaas
-        aiudisad
-        asdiusahd
-        asdihdbsa
-        asdihdbsaasd
-        asdihdbsaas
+        Laboratorium
     16:15 - 17:45
-
+        Grafika
+        Laboratorium
+        
 Wtorek:
     14:15 - 15:45
+        Inżynieria oprogramowania
+        Laboratorium
     16:15 - 17:45
+        Bezpieczeństwo informacji
+        Laboratorium
     18:15 - 19:45
+        Aplikacje internetowe
+        Laboratorium
 
 Środa:
     8:00 - 9:30
+        WF
 
 Czwartek:
+    10:15 - 11:45
+        Technika mikroprocesorowa
+        Wykład
     12:15 - 13:45
+        Paradygmaty programowania
+        Laboratorium
+    14:00 - 15:30
+        Paradygmaty programowania
+        Wykład
 
 Piątek:
     11:30 - 13:00
+        Angielski
