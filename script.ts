@@ -110,7 +110,11 @@ function generateCheckboxes() {
             div.appendChild(checkbox);
 
             let label = document.createElement("label");
-            label.textContent = name;
+            let square = document.createElement("a");
+            square.innerHTML = "&#9632;";
+            square.style.color = color;
+            label.appendChild(square);
+            label.innerHTML += " " + name;
             label.htmlFor = checkboxId;
             div.appendChild(label);
 
@@ -204,7 +208,7 @@ function placeDayEvent(dayEvent: DayEvent, groupPath: string) {
         if (dayEvent.description != null) {
             let description = document.createElement("p");
             description.className = "day-event-description";
-            description.textContent = dayEvent.description;
+            description.innerText = dayEvent.description;
             dayEventContent.appendChild(description);
         }
     }
@@ -324,7 +328,7 @@ function parseGenerateTimetable(t: string, groupPath: string) {
             } else if (currentEvent.description == null) {
                 currentEvent.description = descriptionLineMatch[1];
             } else {
-                currentEvent.description += " " + descriptionLineMatch[1];
+                currentEvent.description += "\n" + descriptionLineMatch[1];
             }
         }
     };

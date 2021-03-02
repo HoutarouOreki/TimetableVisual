@@ -82,7 +82,11 @@ function generateCheckboxes() {
             checkbox.addEventListener("change", onCheckboxChange);
             div.appendChild(checkbox);
             var label = document.createElement("label");
-            label.textContent = name;
+            var square = document.createElement("a");
+            square.innerHTML = "&#9632;";
+            square.style.color = color;
+            label.appendChild(square);
+            label.innerHTML += " " + name;
             label.htmlFor = checkboxId;
             div.appendChild(label);
             fieldset.appendChild(div);
@@ -161,7 +165,7 @@ function placeDayEvent(dayEvent, groupPath) {
         if (dayEvent.description != null) {
             var description = document.createElement("p");
             description.className = "day-event-description";
-            description.textContent = dayEvent.description;
+            description.innerText = dayEvent.description;
             dayEventContent.appendChild(description);
         }
     }
@@ -265,7 +269,7 @@ function parseGenerateTimetable(t, groupPath) {
                 currentEvent.description = descriptionLineMatch[1];
             }
             else {
-                currentEvent.description += " " + descriptionLineMatch[1];
+                currentEvent.description += "\n" + descriptionLineMatch[1];
             }
         }
     }
