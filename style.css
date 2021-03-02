@@ -1,6 +1,4 @@
-html, body {
-    height: 100%;
-}
+
 
 p {
     color: white;
@@ -33,7 +31,6 @@ p {
 
 .day-content-container {
     background-color: #333;
-    border: 2px solid;
     flex-grow: 1;
     margin-bottom: 10px;
     position: relative;
@@ -44,6 +41,7 @@ p {
     height: 100%;
     background-color: #777;
     overflow-y: auto;
+    overscroll-behavior: none;
 }
 
 .day-event-content {
@@ -72,6 +70,8 @@ p {
 
 #main-container {
     height: 100%;
+    overflow-y: hidden;
+    min-height: 500px;
 }
 
 #days-container {
@@ -98,10 +98,9 @@ p {
 
 #hours-container {
     background-color: #111;
-    height: 100%;
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
+    width: 100%;
     min-width: 800px;
 }
 
