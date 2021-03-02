@@ -11,7 +11,7 @@ var minHour = 8;
 var maxHour = 20;
 
 // 1 "column" contains this many hours
-// should (maxHour-minHour) should be divisible by this
+// (maxHour-minHour) should be divisible by this
 var hourDisplayStep = 2;
 
 //var days = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
