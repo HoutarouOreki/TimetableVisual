@@ -1,5 +1,3 @@
-
-
 p {
     color: white;
     margin: 0;
@@ -41,7 +39,7 @@ p {
     height: 100%;
     background-color: #777;
     overflow-y: auto;
-    overscroll-behavior: none;
+    overscroll-behavior-y: none;
 }
 
 .day-event-content {
