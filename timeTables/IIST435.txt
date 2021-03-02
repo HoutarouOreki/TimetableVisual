@@ -1,7 +1,4 @@
 Poniedziałek:
-    8:00 - 10:15
-        Technika cyfrowa
-        Lab
     10:30 - 12:45
         Technika mikroprocesorowa
         Lab

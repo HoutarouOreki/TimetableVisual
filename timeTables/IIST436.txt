@@ -1,10 +1,8 @@
 Poniedziałek:
     8:00 - 10:15
-    color: red
         Technika mikroprocesorowa
         Laboratorium
     16:15 - 17:45
-    color: red
         Grafika
         Laboratorium
         
