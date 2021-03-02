@@ -17,7 +17,7 @@ Wtorek:
     color: red
         Bezpieczeństwo informacji
         Laboratorium
-    18:15 - 19:45
+    18:00 - 19:30
     color: red
         Aplikacje internetowe
         Laboratorium
