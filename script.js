@@ -1,159 +1,126 @@
-class DayEvent {
-    weekDay: string;
-    startHour: number;
-    endHour: number;
-    title: string | null;
-    description: string | null;
-}
-
-var daysContainerWidth = 300
+var DayEvent = /** @class */ (function () {
+    function DayEvent() {
+    }
+    return DayEvent;
+}());
+var daysContainerWidth = 300;
 var minHour = 8;
 var maxHour = 20;
-
 // 1 "column" contains this many hours
 // should (maxHour-minHour) should be divisible by this
 var hourDisplayStep = 2;
-
 //var days = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"];
 var days = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"];
 var dayContentContainersDictionary = {};
-
-var daysContainer: HTMLElement;
-var hoursContainer: HTMLElement;
-
+var daysContainer;
+var hoursContainer;
 /////////
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
     daysContainer = document.getElementById("days-container");
     hoursContainer = document.getElementById("hours-container");
-
     generateDays();
     generateHours();
     generateDayContentContainers();
-
     readTextFile("timeTables/Jarek.txt", parseTimeTableText);
 });
-
 ////
-
 function generateDays() {
-    let dayNameContainers = document.getElementById("day-name-containers");
-    days.forEach(day => {
-        let dayNameContainer = document.createElement("p");
+    var dayNameContainers = document.getElementById("day-name-containers");
+    days.forEach(function (day) {
+        var dayNameContainer = document.createElement("p");
         dayNameContainer.className = "day-name-container";
         dayNameContainer.textContent = day;
         dayNameContainers.appendChild(dayNameContainer);
     });
 }
-
 function generateHours() {
-    let hourNamesContainer = document.getElementById("hour-names-container");
-    for (let hour = minHour; hour < maxHour; hour += hourDisplayStep) {
-        let time = hoursToHourMinute(hour);
-
-        let hourNameContainer = document.createElement("p");
+    var hourNamesContainer = document.getElementById("hour-names-container");
+    for (var hour = minHour; hour < maxHour; hour += hourDisplayStep) {
+        var time = hoursToHourMinute(hour);
+        var hourNameContainer = document.createElement("p");
         hourNameContainer.textContent = time.hour + ":" + (time.minute < 10 ? "0" : "") + time.minute;
         hourNameContainer.className = "hour-name-container";
         hourNamesContainer.appendChild(hourNameContainer);
     }
 }
-
 function generateDayContentContainers() {
-    let dayContentContainers = document.getElementById("day-content-containers");
-    days.forEach(day => {
+    var dayContentContainers = document.getElementById("day-content-containers");
+    days.forEach(function (day) {
         var dayContainer = document.createElement("div");
         dayContainer.className = "day-content-container";
         dayContentContainers.appendChild(dayContainer);
         dayContentContainersDictionary[day] = dayContainer;
     });
 }
-
-function placeDayEvent(dayEvent: DayEvent) {
-    const totalDayHours = maxHour - minHour;
-    const startHourPercent = (dayEvent.startHour - minHour) / totalDayHours;
-    const endHourPercent = (dayEvent.endHour - minHour) / totalDayHours;
-    const totalEventHoursPercent = endHourPercent - startHourPercent;
-
-    let dayEventDiv = document.createElement("div");
+function placeDayEvent(dayEvent) {
+    var totalDayHours = maxHour - minHour;
+    var startHourPercent = (dayEvent.startHour - minHour) / totalDayHours;
+    var endHourPercent = (dayEvent.endHour - minHour) / totalDayHours;
+    var totalEventHoursPercent = endHourPercent - startHourPercent;
+    var dayEventDiv = document.createElement("div");
     dayEventDiv.className = "day-event";
     dayEventDiv.style.marginLeft = startHourPercent * 100 + "%";
     dayEventDiv.style.width = totalEventHoursPercent * 100 + "%";
-
-    let dayEventContent = document.createElement("div");
+    var dayEventContent = document.createElement("div");
     dayEventContent.className = "day-event-content";
     dayEventDiv.appendChild(dayEventContent);
-
     if (dayEvent.title != null) {
-        let title = document.createElement("p");
+        var title = document.createElement("p");
         title.className = "day-event-title";
         title.textContent = dayEvent.title;
         dayEventContent.appendChild(title);
         if (dayEvent.description != null) {
-            let description = document.createElement("p");
+            var description = document.createElement("p");
             description.className = "day-event-description";
             description.textContent = dayEvent.description;
             dayEventContent.appendChild(description);
         }
     }
-
-    let hours = document.createElement("p");
+    var hours = document.createElement("p");
     hours.className = "day-event-hours";
     hours.textContent = hoursToString(dayEvent.startHour) + " - " + hoursToString(dayEvent.endHour);
     dayEventContent.appendChild(hours);
-
     dayContentContainersDictionary[dayEvent.weekDay].appendChild(dayEventDiv);
 }
-
-function hourMinuteToHours(hour: number, minute: number) {
+function hourMinuteToHours(hour, minute) {
     return hour + (minute / 60);
 }
-
-function hoursToHourMinute(hours: number) {
-    let hour = Math.floor(hours);
-    let minute = Math.floor((hours - hour) * 60);
-    return { hour, minute };
+function hoursToHourMinute(hours) {
+    var hour = Math.floor(hours);
+    var minute = Math.floor((hours - hour) * 60);
+    return { hour: hour, minute: minute };
 }
-
 ////////////
-
-
-function hourMinuteToString(hour: number, minute: number) {
+function hourMinuteToString(hour, minute) {
     return hour + ":" + (minute < 10 ? "0" : "") + minute;
 }
-
-function hoursToString(hours: number) {
-    let { hour, minute } = hoursToHourMinute(hours);
+function hoursToString(hours) {
+    var _a = hoursToHourMinute(hours), hour = _a.hour, minute = _a.minute;
     return hourMinuteToString(hour, minute);
 }
-
 //
-
-function readTextFile(sciezka: string, callback: Function) {
+function readTextFile(sciezka, callback) {
     fetch(sciezka)
-        .then(response => response.text())
-        .then((data) => {
-            callback(data.replace(/[\r]+/g, ""));
-        });
+        .then(function (response) { return response.text(); })
+        .then(function (data) {
+        callback(data.replace(/[\r]+/g, ""));
+    });
 }
-
-function parseTimeTableText(t: string) {
-    const lines = t.split("\n");
-
-    const dayNameRegex = /^([A-Z].+):$/
-    const dayEventRegex = /^(?:\t|\s{4})(\d+):(\d+) ?- ?(\d+):(\d+):?$/
-    const dayEventDescription = /^(?:\t|\s{4}){2}(.*)$/
-
-    let currentDay: string;
-    let currentEvent: DayEvent;
-
+function parseTimeTableText(t) {
+    var lines = t.split("\n");
+    var dayNameRegex = /^([A-Z].+):$/;
+    var dayEventRegex = /^(?:\t|\s{4})(\d+):(\d+) ?- ?(\d+):(\d+):?$/;
+    var dayEventDescription = /^(?:\t|\s{4}){2}(.*)$/;
+    var currentDay;
+    var currentEvent;
     for (var i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        let dayNameMatch = execRegex(dayNameRegex, line);
+        var line = lines[i];
+        var dayNameMatch = execRegex(dayNameRegex, line);
         if (dayNameMatch != null) {
             currentDay = dayNameMatch[1];
             continue;
         }
-        let eventMatch = execRegex(dayEventRegex, line);
+        var eventMatch = execRegex(dayEventRegex, line);
         if (eventMatch != null) {
             if (currentEvent != undefined) {
                 placeDayEvent(currentEvent);
@@ -164,24 +131,25 @@ function parseTimeTableText(t: string) {
             currentEvent.endHour = hourMinuteToHours(parseInt(eventMatch[3]), parseInt(eventMatch[4]));
             continue;
         }
-        let descriptionLineMatch = execRegex(dayEventDescription, line);
+        var descriptionLineMatch = execRegex(dayEventDescription, line);
         if (descriptionLineMatch != null) {
             if (currentEvent.title == null) {
                 currentEvent.title = descriptionLineMatch[1];
-            } else if (currentEvent.description == null) {
+            }
+            else if (currentEvent.description == null) {
                 currentEvent.description = descriptionLineMatch[1];
-            } else {
+            }
+            else {
                 currentEvent.description += " " + descriptionLineMatch[1];
             }
         }
-    };
-
+    }
+    ;
     if (currentEvent != undefined) {
         placeDayEvent(currentEvent);
     }
 }
-
-function execRegex(regex: RegExp, text: string) {
+function execRegex(regex, text) {
     regex.lastIndex = 0;
     return regex.exec(text);
 }

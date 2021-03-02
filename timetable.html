@@ -1,7 +1,10 @@
 <html>
     <head>
-        <link href="style.css" rel="stylesheet">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link href="style.css" rel="stylesheet">
         <title>Timetable</title>
     </head>
     <body>
@@ -9,14 +12,14 @@
         <div id="main-container" class="d-flex">
             <div id="days-container">
                 <div class="hours-height-container"></div>
-                <div class="day-name-container">Pon</div>
-                <div class="day-name-container">Wt</div>
+                <div id="day-name-containers"></div>
             </div>
             <div id="hours-container">
-                <div class="hours-height-container"></div>
+                <div id="hour-names-container" class="hours-height-container"></div>
+                <div id="day-content-containers"></div>
             </div>
         </div>
 
-        <!-- <script src="script.js"></script> -->
+        <script src="script.js"></script>
     </body>
 </html>
