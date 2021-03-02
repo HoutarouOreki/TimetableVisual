@@ -1,0 +1,33 @@
+html, body {
+    height: 100%;
+}
+
+.hours-height-container {
+    height: 100px;
+    background-color: beige;
+}
+
+.day-name-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#main-container {
+    height: 100%;
+}
+
+#days-container {
+    background-color: aqua;
+    width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#hours-container {
+    background-color: aquamarine;
+    height: 100%;
+    flex-grow: 1;
+}
