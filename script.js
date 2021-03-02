@@ -99,7 +99,6 @@ function wireUpSelectorButtons() {
     var openButton = document.getElementById("group-selector-open-button");
     openButton.addEventListener("click", function () {
         groupSelector.classList.remove("d-none");
-        console.log('H');
     });
 }
 ////////

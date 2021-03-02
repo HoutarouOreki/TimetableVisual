@@ -130,8 +130,6 @@ function wireUpSelectorButtons() {
     let openButton = document.getElementById("group-selector-open-button");
     openButton.addEventListener("click", () => {
         groupSelector.classList.remove("d-none");
-        console.log('H');
-
     });
 }
 
