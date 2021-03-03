@@ -8,10 +8,6 @@ div {
     color: white;
 }
 
-.black-border-bottom {
-    border-bottom: 1px solid #111;
-}
-
 .day-time-separator {
     mix-blend-mode: difference;
     position: absolute;
