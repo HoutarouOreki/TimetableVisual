@@ -203,9 +203,6 @@ function findAdjustWithCollidingEvents(event) {
         var heightPercent = 1 / collidingEvents.length * 100;
         collidingEvent.div.style.height = heightPercent + "%";
         collidingEvent.div.style.top = i * heightPercent + "%";
-        if (collidingEvents.length > 1 && !collidingEvent.div.classList.contains("black-border-bottom")) {
-            collidingEvent.div.classList.add("black-border-bottom");
-        }
     }
 }
 function hourMinuteToHours(hour, minute) {
