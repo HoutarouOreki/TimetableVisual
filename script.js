@@ -8,7 +8,7 @@ var timetablesColors = {};
 var placedEvents = [];
 var daysContainerWidth = 300;
 var minHour = 8;
-var maxHour = 21;
+var maxHour = 20;
 // 1 "column" contains this many hours
 // (maxHour-minHour) should be divisible by this
 var hourDisplayStep = 2;
