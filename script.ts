@@ -243,8 +243,6 @@ function clearTimetables() {
 }
 
 function populateTimetable(timetableKey: string) {
-    console.log("h");
-    
     timetablesEvents[timetableKey].forEach(e => placeDayEvent(e, timetableKey));
 }
 

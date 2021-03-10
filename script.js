@@ -190,7 +190,6 @@ function clearTimetables() {
     placedEvents.length = 0;
 }
 function populateTimetable(timetableKey) {
-    console.log("h");
     timetablesEvents[timetableKey].forEach(function (e) { return placeDayEvent(e, timetableKey); });
 }
 ////////
