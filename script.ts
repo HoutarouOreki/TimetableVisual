@@ -8,13 +8,13 @@ class DayEvent {
     collidingEvents: DayEvent[] = [];
 }
 
-var groupColors = {};
+var timetablesColors = {};
 
 var placedEvents: DayEvent[] = [];
 
 var daysContainerWidth = 300
 var minHour = 8;
-var maxHour = 20;
+var maxHour = 21;
 
 // 1 "column" contains this many hours
 // (maxHour-minHour) should be divisible by this
@@ -27,6 +27,11 @@ var dayContentContainersDictionary = {};
 var daysContainer: HTMLElement;
 var hoursContainer: HTMLElement;
 
+var insideGroups = {};
+
+var timetablesKeys: string[] = [];
+var timetablesEvents: { [timetableKey: string]: DayEvent[] } = {};
+
 /////////
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -34,14 +39,31 @@ document.addEventListener("DOMContentLoaded", () => {
     hoursContainer = document.getElementById("hours-container");
 
     generateDays();
+
+    generateCheckboxes(loadTimetables);
+
     generateHours();
     generateDayContentContainers();
 
-    generateCheckboxes();
     wireUpSelectorButtons();
 });
 
 /////////
+
+function loadTimetables() {
+    for (var  i =0; i < timetablesKeys.length; i++) {
+        loadTimetable(timetablesKeys[i]);
+    }
+}
+
+function loadTimetable(timetableKey: string) {
+    if (!notGroupedRegex.test(timetableKey)) {
+        return;
+    }
+    readTextFile("timeTables/" + timetableKey + ".txt", (t: string) => {
+        parseTimetable(t).forEach(e => timetablesEvents[timetableKey].push(e));
+    });
+}
 
 function generateDays() {
     let dayNameContainers = document.getElementById("day-name-containers");
@@ -90,11 +112,14 @@ function generateDaySeparators(container: HTMLDivElement) {
     }
 }
 
-function generateCheckboxes() {
+function generateCheckboxes(callback: Function) {
     readTextFile("timetablesList.txt", (t: string) => {
         let fieldset = document.getElementById("timetables-fieldset");
         t.split("\n").forEach((line: string) => {
-            let [name, path, color] = line.split(" / ");
+            let [name, key, color] = line.split(" / ");
+            if (!color) {
+                color = "rgba(0, 0, 0, 0)"
+            }
 
             let div = document.createElement("div");
             div.className = "form-check form-switch";
@@ -102,10 +127,10 @@ function generateCheckboxes() {
             let checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.className = "form-check-input";
-            let checkboxId = "timetable-checkbox-" + path;
+            let checkboxId = "timetable-checkbox-" + key;
             checkbox.id = checkboxId;
 
-            checkbox.addEventListener("change", onCheckboxChange)
+            checkbox.addEventListener("change", e => onCheckboxChange(e))
 
             div.appendChild(checkbox);
 
@@ -120,8 +145,13 @@ function generateCheckboxes() {
 
             fieldset.appendChild(div);
 
-            groupColors[path] = color;
+            timetablesColors[key] = color;
+
+            timetablesKeys.push(key);
+            timetablesEvents[key] = [];
         });
+
+        callback();
     });
 }
 
@@ -139,20 +169,70 @@ function wireUpSelectorButtons() {
 
 ////////
 
-function onCheckboxChange() {
+function getNameOrNamesFromCheckboxId(id: string) {
+    return id.replace("timetable-checkbox-", "");
+}
+
+////////
+
+let notGroupedRegex = /^[^ ]+?$/;
+
+function selectSubgroups(ids: string[]) {
+    ids.forEach(id => {
+        let checkbox = document.getElementById("timetable-checkbox-" + id) as HTMLInputElement;
+        checkbox.checked = true;
+    });
+}
+
+function unselectParentsOf(id: string) {
+    let inputElements = document.getElementsByTagName("input");
+    for (var i = 0; i < inputElements.length; i++) {
+        if (!notGroupedRegex.test(inputElements[i].id) && inputElements[i].type == "checkbox"
+            && inputElements[i].checked) {
+            let childrenNames = getNameOrNamesFromCheckboxId(inputElements[i].id).split(" ");
+            if (childrenNames.includes(id)) {
+                inputElements[i].checked = false;
+            }
+        }
+    }
+}
+
+let alreadyChanging = false;
+
+function onCheckboxChange(e: Event | null) {
+    if (alreadyChanging) {
+        return;
+    }
+
+    alreadyChanging = true;
+
+    if (e) {
+        let inputElement = e.target as HTMLInputElement;
+        if (inputElement.type == "checkbox" && !notGroupedRegex.test(inputElement.id)
+            && inputElement.checked) {
+            selectSubgroups(getNameOrNamesFromCheckboxId(inputElement.id).split(" "));
+        } else if (inputElement.type == "checkbox" && !inputElement.checked) {
+            // unchecking a sub-element of a group
+            // needs to uncheck parent
+            unselectParentsOf(getNameOrNamesFromCheckboxId(inputElement.id));
+        }
+    }
+
     clearTimetables();
 
     let inputElements = document.getElementsByTagName("input");
     let selectedTimetables: string[] = [];
     for (var i = 0; i < inputElements.length; i++) {
         if (inputElements[i].type == "checkbox" && inputElements[i].checked) {
-            selectedTimetables.push(inputElements[i].id.replace("timetable-checkbox-", ""));
+            let nameOrNames = getNameOrNamesFromCheckboxId(inputElements[i].id);
+            if (/^[^ ]+?$/.test(nameOrNames)) { // single group
+                selectedTimetables.push(nameOrNames);
+            }
         }
     }
-    selectedTimetables.forEach(timetableName => {
-        readTextFile("timeTables/" + timetableName + ".txt", (t: string) =>
-            parseGenerateTimetable(t, timetableName));
-    });
+    selectedTimetables.forEach(timetableKey => populateTimetable(timetableKey));
+
+    alreadyChanging = false;
 }
 
 function clearTimetables() {
@@ -160,6 +240,12 @@ function clearTimetables() {
         placedEvent.div.remove();
     });
     placedEvents.length = 0;
+}
+
+function populateTimetable(timetableKey: string) {
+    console.log("h");
+    
+    timetablesEvents[timetableKey].forEach(e => placeDayEvent(e, timetableKey));
 }
 
 ////////
@@ -179,7 +265,7 @@ function calculateEventTimePercentages(dayEvent: DayEvent) {
     return calculateTimePercentages(dayEvent.startHour, dayEvent.endHour);
 }
 
-function placeDayEvent(dayEvent: DayEvent, groupPath: string) {
+function placeDayEvent(dayEvent: DayEvent, timetableKey: string) {
     const timePercentages = calculateEventTimePercentages(dayEvent);
 
     let dayEventDiv = document.createElement("div");
@@ -193,7 +279,7 @@ function placeDayEvent(dayEvent: DayEvent, groupPath: string) {
 
     let dayEventBackground = document.createElement("div");
     dayEventBackground.className = "day-event-background";
-    dayEventBackground.style.backgroundColor = groupColors[groupPath] ?? "gray";
+    dayEventBackground.style.backgroundColor = timetablesColors[timetableKey] ?? "gray";
     dayEventDiv.appendChild(dayEventBackground);
 
     let dayEventContent = document.createElement("div");
@@ -287,7 +373,9 @@ function readTextFile(sciezka: string, callback: Function) {
         });
 }
 
-function parseGenerateTimetable(t: string, groupPath: string) {
+function parseTimetable(t: string): DayEvent[] {
+    let events: DayEvent[] = [];
+
     const lines = t.split("\n");
 
     const dayNameRegex = /^(.+):$/
@@ -310,7 +398,7 @@ function parseGenerateTimetable(t: string, groupPath: string) {
         let eventMatch = execRegex(dayEventRegex, line);
         if (eventMatch != null) {
             if (currentEvent != undefined) {
-                placeDayEvent(currentEvent, groupPath);
+                events.push(currentEvent);
             }
             currentEvent = new DayEvent();
             currentEvent.weekDay = currentDay;
@@ -331,8 +419,10 @@ function parseGenerateTimetable(t: string, groupPath: string) {
     };
 
     if (currentEvent != undefined) {
-        placeDayEvent(currentEvent, groupPath);
+        events.push(currentEvent);
     }
+
+    return events;
 }
 
 function execRegex(regex: RegExp, text: string) {
