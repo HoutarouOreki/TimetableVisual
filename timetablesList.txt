@@ -1,6 +1,3 @@
-IIST 4 - wykłady z obecnością / wykladyWymagane / orange
-IIST 4 - wykłady opcjonalne / wykladyOpcjonalne / blue
-IIST 4.3/5 - lab, ćw / IIST435 / purple
-IIST 4.3/6 - lab, ćw / IIST436 / red
-Jarek - prywatne / Jarek / #BBB
-Jarek - wszystko / Jarek IIST436 wykladyWymagane
+Inżynieria Oprogramowania - wykłady / IO_wyklady / blue
+IO 6.3 - lab / IO6_3 / pink
+IO 6.4 - lab / IO6_4 / purple

@@ -1,0 +1,51 @@
+Środa:
+
+    8:15 - 10:00
+        Interakcja człowiek-komputer
+        CT 404
+        Lab
+        mgr inż. Katarzyna Baran
+
+    10:15 - 12:00
+        Programowanie aplikacji mobilnych na platformę Android
+        PE 107
+        Lab
+        dr Rafał Stęgierski
+    
+    12:15 - 14:00
+        Szkielety programistyczne w aplikacjach internetowych
+        PE 123
+        Lab
+        dr Mariusz Dzieńkowski
+
+Czwartek:
+    8:15 - 10:00
+        Projekt zespołowy - projektowanie
+        PE 109
+        proj
+        dr inż. Małgorzata Plechawska-Wójcik
+
+    14:15 - 16:00
+        Programowanie aplikacji mobilnych na platformę iOS
+        PE 107
+        Lab
+        dr Paweł Powroźnik
+    
+    16:15 - 18:00
+        Zarządzanie bazami SQL i NoSQL
+        CT 404
+        Lab
+        mgr inż. Monika Kaczorowska
+
+    18:15 - 20:00
+        Programowanie aplikacji w chmurze obliczeniowej
+        CT 203
+        Lab
+        mgr Dariusz Głuchowski
+
+Piątek:
+    16:15 - 18:00
+        Integracja systemów
+        PE 102
+        Lab
+        mgr inż. Stanisław Skulimowski

@@ -1,9 +1,0 @@
-Czwartek:
-    10:15 - 11:45
-        Technika mikroprocesorowa
-        Wykład
-        5: 100% frekwencja + lab na 5
-    14:00 - 15:30
-        Paradygmaty programowania
-        Wykład
-        Frekwencja losowo na moodle w trakcie

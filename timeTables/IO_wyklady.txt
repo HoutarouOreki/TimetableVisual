@@ -1,0 +1,36 @@
+Wtorek:
+    8:15 - 10:00
+        Programowanie aplikacji mobilnych na platformę iOS
+        Wykład
+        dr inż. Maria Skublewska-Paszkowska
+
+    10:15 - 12:00
+        Zarządzanie bazami SQL i NoSQL
+        Wykład
+        dr inż. Małgorzata Plechawska-Wójcik
+
+    12:15 - 14:00
+        Programowanie aplikacji mobilnych na platformę Android
+        Wykład
+        dr inż. Jakub Smołka
+
+    14:15 - 16:00
+        Integracja systemów
+        Wykład
+        dr inż. Piotr Kopniak
+
+    16:15 - 18:00
+        Programowanie aplikacji w chmurze obliczeniowej
+        Wykład
+        dr hab. inż. Dariusz Czerwiński
+
+Piątek:
+    8:15 - 10:00
+        Interakcja człowiek-komputer
+        Wykład
+        dr inż. Marek Miłosz
+        
+    10:15 - 12:00
+        Szkielety programistyczne w aplikacjach internetowych
+        Wykład
+        dr Mariusz Dzieńkowski
