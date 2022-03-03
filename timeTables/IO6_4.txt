@@ -1,40 +1,40 @@
 Środa:
-    8:15 - 10:00
+    8:30 - 10:00
         Projekt zespołowy - projektowanie
         PE 109
         proj
         dr inż. Małgorzata Plechawska-Wójcik
 
-    10:15 - 12:00
+    10:15 - 11:45
         Interakcja człowiek-komputer
         CT 404
         Lab
         mgr inż. Katarzyna Baran
 
-    12:15 - 14:00
+    12:15 - 13:45
         Programowanie aplikacji mobilnych na platformę Android
         PE 107
         Lab
         dr Rafał Stęgierski
 
-    14:15 - 16:00
+    14:15 - 15:45
         Integracja systemów
         E214
         Lab
         mgr inż. Łukasz Gałka
-    
-    18:15 - 20:00
-        Programowanie aplikacji w chmurze obliczeniowej
-        CT 203
-        Lab
-        mgr Dariusz Głuchowski
 
 Czwartek:
-    8:15 - 10:00
+    8:15 - 9:45
         Szkielety programistyczne w aplikacjach internetowych
         PE 102
         Lab
         dr Michał Dolecki
+    
+    10:00 - 11:30
+        Programowanie aplikacji w chmurze obliczeniowej
+        CT 203
+        Lab
+        mgr Dariusz Głuchowski
 
     16:15 - 18:00
         Programowanie aplikacji mobilnych na platformę iOS
